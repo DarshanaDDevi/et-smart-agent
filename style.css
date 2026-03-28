@@ -1,0 +1,252 @@
+/* ── GLOBAL RESET & FONTS ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0A0A0F;
+  color: #E8E8F0;
+  font-family: 'Segoe UI', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 28px;
+  background: #0A0A0F;
+  border-bottom: 1px solid #2A2A38;
+}
+
+.logo {
+  background: #E8001C;
+  color: white;
+  font-weight: 900;
+  font-size: 18px;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.header-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+}
+
+.status {
+  margin-left: auto;
+  background: rgba(0,200,150,0.1);
+  border: 1px solid rgba(0,200,150,0.3);
+  color: #00C896;
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 100px;
+}
+
+/* ── MAIN 3 COLUMN LAYOUT ── */
+.app {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── LEFT SIDEBAR ── */
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  border-right: 1px solid #2A2A38;
+  padding: 24px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar h3 {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #6B6B80;
+  text-transform: uppercase;
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+.sidebar p {
+  font-size: 13px;
+  color: #9999B0;
+  padding: 4px 0;
+}
+
+.sidebar span {
+  color: #E8E8F0;
+  font-weight: 600;
+}
+
+/* ── CHAT AREA ── */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid #2A2A38;
+}
+
+.agent-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+}
+
+.agent-desc {
+  font-size: 12px;
+  color: #6B6B80;
+  margin-top: 3px;
+}
+
+/* ── MESSAGES ── */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.msg-agent {
+  background: #13131A;
+  border: 1px solid #2A2A38;
+  border-radius: 16px 16px 16px 4px;
+  padding: 14px 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 75%;
+  align-self: flex-start;
+}
+
+.msg-user {
+  background: rgba(74,158,255,0.12);
+  border: 1px solid rgba(74,158,255,0.25);
+  border-radius: 16px 16px 4px 16px;
+  padding: 14px 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 75%;
+  align-self: flex-end;
+  color: white;
+}
+
+/* ── QUICK REPLIES ── */
+.quick-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 24px 12px;
+}
+
+.qr-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #2A2A38;
+  color: #E8E8F0;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.qr-btn:hover {
+  background: rgba(232,0,28,0.1);
+  border-color: rgba(232,0,28,0.4);
+  color: white;
+}
+
+/* ── INPUT ROW ── */
+.input-row {
+  display: flex;
+  gap: 10px;
+  padding: 14px 24px 20px;
+  border-top: 1px solid #2A2A38;
+}
+
+#inputBox {
+  flex: 1;
+  background: #13131A;
+  border: 1px solid #2A2A38;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #E8E8F0;
+  font-size: 14px;
+  outline: none;
+}
+
+#inputBox:focus {
+  border-color: rgba(232,0,28,0.5);
+}
+
+#sendBtn {
+  background: #E8001C;
+  border: none;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+#sendBtn:hover {
+  background: #FF1A35;
+}
+
+/* ── RIGHT PANEL ── */
+.path-panel {
+  width: 240px;
+  min-width: 240px;
+  border-left: 1px solid #2A2A38;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.path-panel h3 {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #6B6B80;
+  text-transform: uppercase;
+}
+
+.path-step {
+  background: #13131A;
+  border: 1px solid #2A2A38;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #6B6B80;
+}
+
+.path-step.active {
+  border-color: #E8001C;
+  color: white;
+}
+
+.path-step.done {
+  border-color: #00C896;
+  color: #00C896;
+}
+
+#scoreNum {
+  font-size: 13px;
+  color: #6B6B80;
+  margin-top: 8px;
+}
