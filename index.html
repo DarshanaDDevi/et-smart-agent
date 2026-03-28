@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ET Smart Agent</title>
   <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 
 <body>
@@ -28,38 +30,30 @@
       <p>Experience: <span id="prof-exp">—</span></p>
       <p>Risk: <span id="prof-risk">—</span></p>
 
+      <!-- Chart / News panel injects here dynamically based on user interest -->
+
       <h3>ET Products For You</h3>
-      <div id="products-container">
-        Completing your profile...
-      </div>
+      <div id="products-container">Completing your profile...</div>
 
       <h3>Sector Risk</h3>
-      <div id="risk-sectors">
-        Chat to reveal...
-      </div>
+      <div id="risk-sectors">Chat to reveal...</div>
     </div>
 
     <!-- MIDDLE: CHAT AREA -->
     <div class="chat-area">
 
-      <!-- CHAT HEADER -->
       <div class="chat-header">
         <div class="agent-name">Artha — ET Smart Advisor</div>
         <div class="agent-desc">Personalised financial guidance</div>
       </div>
 
-      <!-- MESSAGES WILL APPEAR HERE -->
-      <div class="messages" id="messages">
-      </div>
+      <div class="messages" id="messages"></div>
 
-      <!-- QUICK REPLY BUTTONS -->
-      <div class="quick-replies" id="quickReplies">
-      </div>
+      <div class="quick-replies" id="quickReplies"></div>
 
-      <!-- TYPE YOUR MESSAGE -->
       <div class="input-row">
         <input type="text" id="inputBox" placeholder="Type your message..."/>
-        <button id="sendBtn">Send</button>
+        <button id="sendBtn" onclick="sendMessage()">Send</button>
       </div>
 
     </div>
@@ -67,21 +61,18 @@
     <!-- RIGHT: ONBOARDING PATH -->
     <div class="path-panel">
       <h3>Your Path</h3>
-
       <div class="path-step" id="step-0">👋 Introduction</div>
       <div class="path-step" id="step-1">🎯 Goals & Experience</div>
       <div class="path-step" id="step-2">📈 Investment Interests</div>
       <div class="path-step" id="step-3">⚡ Risk Profiling</div>
       <div class="path-step" id="step-4">🎁 Your ET Plan</div>
-
       <div id="scoreNum">Profile: 0% complete</div>
     </div>
 
   </div>
 
-<script src="config.js"></script>
+  <script src="config.js"></script>
   <script src="script.js"></script>
 
 </body>
-
 </html>
