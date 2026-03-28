@@ -250,3 +250,68 @@ body {
   color: #6B6B80;
   margin-top: 8px;
 }
+/* ── PROFILE FIELD FLASH ── */
+.highlight {
+  animation: flashIn 0.8s ease;
+}
+
+@keyframes flashIn {
+  0%   { background: rgba(232,0,28,0.3); border-radius: 4px; }
+  100% { background: transparent; }
+}
+
+/* ── PATH STEP STATES ── */
+.path-step.active {
+  border-color: #E8001C;
+  color: white;
+  background: rgba(232,0,28,0.08);
+}
+
+.path-step.done {
+  border-color: #00C896;
+  color: #00C896;
+  background: rgba(0,200,150,0.05);
+}
+
+/* ── PRODUCT PILL ── */
+.product-pill {
+  display: inline-block;
+  background: rgba(232,0,28,0.1);
+  border: 1px solid rgba(232,0,28,0.25);
+  color: #FF6B6B;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  margin: 3px;
+  transition: all 0.3s;
+}
+
+.product-pill:hover {
+  background: rgba(232,0,28,0.2);
+  color: white;
+}
+
+/* ── RISK BAR ANIMATION ── */
+.risk-bar {
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.risk-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  width: 0%;
+  transition: width 1.2s ease;
+}
+
+/* ── MESSAGE ANIMATION ── */
+.msg-agent, .msg-user {
+  animation: msgIn 0.3s ease;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

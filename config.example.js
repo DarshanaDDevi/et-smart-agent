@@ -1,2 +1,2 @@
-const GEMINI_KEY = "REPLACE_WITH_YOUR_GEMINI_KEY";
+const GEMINI_KEY = "your-groq-key-here";
 
