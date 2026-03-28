@@ -163,22 +163,3 @@ This project was built incrementally with clear commits:
 ```
 ```
 
-Press **Ctrl + S**.
-
----
-
-## 🔧 Commit to GitHub
-
-In terminal one at a time:
-
-**1️⃣**
-```
-git add .
-```
-**2️⃣**
-```
-git commit -m "Phase 6: Add professional README with setup instructions"
-```
-**3️⃣**
-```
-git push
