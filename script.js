@@ -1,27 +1,16 @@
-// API key loaded from config.js
-const API_KEY = GEMINI_KEY;
+const API_KEY = null; // handled by /api/chat serverless function
 
-// ── CONVERSATION HISTORY ──
 const conversationHistory = [];
-
-// ── PHASE TRACKER ──
 let currentPhase = 0;
-
-// ── TRACK SHOWN PANELS & ANSWERED QUICK REPLIES ──
 let chartShown = false;
-let newsShown  = false;
+let newsShown = false;
 let quickRepliesAnswered = {};
-
-// ── NIFTY DATA ──
 let niftyData = null;
 
-// ── LOAD NIFTY CSV ──
 function loadNiftyCSV() {
   return new Promise((resolve, reject) => {
     Papa.parse('NIFTY_50-28-03-2025-to-28-03-2026.csv', {
-      download: true,
-      header: true,
-      skipEmptyLines: true,
+      download: true, header: true, skipEmptyLines: true,
       transformHeader: h => h.trim(),
       complete: function(results) {
         const rows = results.data.reverse();
@@ -29,21 +18,11 @@ function loadNiftyCSV() {
         const closes  = rows.map(r => parseFloat(r['Close']));
         const highs   = rows.map(r => parseFloat(r['High']));
         const lows    = rows.map(r => parseFloat(r['Low']));
-        const opens   = rows.map(r => parseFloat(r['Open']));
-        const volumes = rows.map(r => parseInt(r['Shares Traded'].replace(/,/g, '')));
-
-        const high52w      = Math.max(...highs);
-        const low52w       = Math.min(...lows);
-        const latestClose  = closes[closes.length - 1];
-        const yearAgoClose = closes[0];
-        const yearlyReturn = (((latestClose - yearAgoClose) / yearAgoClose) * 100).toFixed(2);
-
-        niftyData = {
-          dates, closes, highs, lows, opens, volumes,
-          high52w, low52w, latestClose,
-          yearlyReturn: parseFloat(yearlyReturn),
-          totalDays: dates.length
-        };
+        const high52w     = Math.max(...highs);
+        const low52w      = Math.min(...lows);
+        const latestClose = closes[closes.length - 1];
+        const yearlyReturn = (((latestClose - closes[0]) / closes[0]) * 100).toFixed(2);
+        niftyData = { dates, closes, high52w, low52w, latestClose, yearlyReturn: parseFloat(yearlyReturn), totalDays: dates.length };
         resolve(niftyData);
       },
       error: reject
@@ -51,58 +30,28 @@ function loadNiftyCSV() {
   });
 }
 
-// ── DRAW MARKET CHART (only for stock/market interest) ──
 function drawMarketChart() {
   if (!niftyData || chartShown) return;
   chartShown = true;
-
   const sidebar = document.querySelector('.sidebar');
   const chartSection = document.createElement('div');
   chartSection.id = 'market-chart-section';
   chartSection.innerHTML = `
-    <h3 style="font-size:11px;letter-spacing:1.5px;color:#6B6B80;text-transform:uppercase;margin-top:16px;margin-bottom:6px;">
-      Market Overview
-    </h3>
+    <h3 style="font-size:11px;letter-spacing:1.5px;color:#6B6B80;text-transform:uppercase;margin-top:16px;margin-bottom:6px;">Market Overview</h3>
     <canvas id="niftyCanvas" width="220" height="90" style="display:block;margin:0 auto 4px;"></canvas>
     <div id="niftyStats" style="font-size:11px;color:#6B6B80;line-height:1.8;text-align:center;">Loading...</div>
   `;
-
-  const productsHeading = Array.from(sidebar.querySelectorAll('h3'))
-    .find(h => h.textContent.includes('ET Products'));
+  const productsHeading = Array.from(sidebar.querySelectorAll('h3')).find(h => h.textContent.includes('ET Products'));
   if (productsHeading) sidebar.insertBefore(chartSection, productsHeading);
   else sidebar.appendChild(chartSection);
-
   const step = 5;
   const labels = niftyData.dates.filter((_, i) => i % step === 0);
   const prices = niftyData.closes.filter((_, i) => i % step === 0);
-
   new Chart(document.getElementById('niftyCanvas'), {
     type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: prices,
-        borderColor: '#E8001C',
-        borderWidth: 1.5,
-        pointRadius: 0,
-        fill: true,
-        backgroundColor: 'rgba(232,0,28,0.08)'
-      }]
-    },
-    options: {
-      responsive: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { display: false },
-        y: {
-          display: true,
-          ticks: { color: '#6B6B80', font: { size: 9 }, maxTicksLimit: 4 },
-          grid: { color: 'rgba(255,255,255,0.04)' }
-        }
-      }
-    }
+    data: { labels, datasets: [{ data: prices, borderColor: '#E8001C', borderWidth: 1.5, pointRadius: 0, fill: true, backgroundColor: 'rgba(232,0,28,0.08)' }] },
+    options: { responsive: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: true, ticks: { color: '#6B6B80', font: { size: 9 }, maxTicksLimit: 4 }, grid: { color: 'rgba(255,255,255,0.04)' } } } }
   });
-
   const returnColor = niftyData.yearlyReturn >= 0 ? '#00C896' : '#FF7A7A';
   const returnArrow = niftyData.yearlyReturn >= 0 ? '▲' : '▼';
   document.getElementById('niftyStats').innerHTML = `
@@ -113,24 +62,20 @@ function drawMarketChart() {
   `;
 }
 
-// ── SHOW NEWS CONTENT (only for news interest) ──
 function showNewsContent() {
   if (newsShown) return;
   newsShown = true;
-
   const sidebar = document.querySelector('.sidebar');
   const newsSection = document.createElement('div');
   newsSection.id = 'news-section';
   newsSection.innerHTML = `
-    <h3 style="font-size:11px;letter-spacing:1.5px;color:#6B6B80;text-transform:uppercase;margin-top:16px;margin-bottom:6px;">
-      Top ET Categories
-    </h3>
+    <h3 style="font-size:11px;letter-spacing:1.5px;color:#6B6B80;text-transform:uppercase;margin-top:16px;margin-bottom:6px;">Top ET Categories</h3>
     ${[
       { icon: '🏦', label: 'Economy & Policy', desc: 'RBI, Budget, GDP updates' },
-      { icon: '🌏', label: 'Global Markets',   desc: 'US Fed, Dow, Nasdaq' },
-      { icon: '🏢', label: 'Corporate News',   desc: 'Earnings, M&A, Results' },
-      { icon: '📱', label: 'Tech & Startups',  desc: 'Funding, IPO pipeline' },
-      { icon: '🛢️', label: 'Commodities',      desc: 'Gold, Oil, Agri prices' },
+      { icon: '🌏', label: 'Global Markets', desc: 'US Fed, Dow, Nasdaq' },
+      { icon: '🏢', label: 'Corporate News', desc: 'Earnings, M&A, Results' },
+      { icon: '📱', label: 'Tech & Startups', desc: 'Funding, IPO pipeline' },
+      { icon: '🛢️', label: 'Commodities', desc: 'Gold, Oil, Agri prices' },
     ].map(n => `
       <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1A1A26;">
         <span style="font-size:18px;">${n.icon}</span>
@@ -144,14 +89,11 @@ function showNewsContent() {
       📰 ET Now live TV for real-time business news
     </div>
   `;
-
-  const productsHeading = Array.from(sidebar.querySelectorAll('h3'))
-    .find(h => h.textContent.includes('ET Products'));
+  const productsHeading = Array.from(sidebar.querySelectorAll('h3')).find(h => h.textContent.includes('ET Products'));
   if (productsHeading) sidebar.insertBefore(newsSection, productsHeading);
   else sidebar.appendChild(newsSection);
 }
 
-// ── SYSTEM PROMPT ──
 const SYSTEM_PROMPT = `You are Artha, a warm and friendly onboarding advisor for The Economic Times (ET), India's top financial newspaper.
 
 Your job is to profile the user in a short friendly conversation and recommend the right ET products for them.
@@ -186,7 +128,7 @@ SECTOR RISK DATA:
 Follow these phases strictly:
 Phase 0 - GREETING: Warmly greet. Ask how they feel today.
 Phase 1 - GOALS: Ask what they want. Ask experience level.
-Phase 2 - INTERESTS: Ask if they like stocks, mutual funds, IPOs, or just news. Once answered NEVER ask again.
+Phase 2 - INTERESTS: Ask stocks, mutual funds, IPOs, or news. Once answered NEVER ask again.
 Phase 3 - RISK: Ask ONE risk scenario. Skip if user only wants news.
 Phase 4 - PLAN: Summarise profile and recommend ET products.
 
@@ -204,31 +146,26 @@ At the end of every reply add:
 
 Always include phase and products. Only include fields detected so far.`;
 
-// ── CALL GROQ API ──
 async function callClaude(userMessage) {
   conversationHistory.push({ role: "user", content: userMessage });
 
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  // Always use Vercel serverless function
+  const response = await fetch("/api/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${API_KEY}`
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "llama-3.3-70b-versatile",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        ...conversationHistory.map(m => ({
-          role: m.role === "assistant" ? "assistant" : "user",
-          content: m.content
-        }))
-      ],
-      max_tokens: 1000
+      system: SYSTEM_PROMPT,
+      messages: conversationHistory.map(m => ({
+        role: m.role === "assistant" ? "assistant" : "user",
+        content: m.content
+      }))
     })
   });
 
   const data = await response.json();
-  if (!data.choices) throw new Error(data.error?.message || "Groq API call failed");
+  console.log("API Response:", JSON.stringify(data));
+
+  if (!data.choices) throw new Error(data.error?.message || "API call failed");
 
   const fullText = data.choices[0].message.content;
 
@@ -238,16 +175,11 @@ async function callClaude(userMessage) {
       const extracted = JSON.parse(profileMatch[1].trim());
       updateProfile(extracted);
       currentPhase = extracted.phase || 0;
-
-      // Conditionally show chart or news based on interest
       const interest = (extracted.interest || '').toLowerCase();
-      if (interest.includes('stock') || interest.includes('market') ||
-          interest.includes('ipo')   || interest.includes('mutual')) {
+      if (interest.includes('stock') || interest.includes('market') || interest.includes('ipo') || interest.includes('mutual')) {
         drawMarketChart();
       }
-      if (interest.includes('news')) {
-        showNewsContent();
-      }
+      if (interest.includes('news')) showNewsContent();
     } catch(e) { console.log("Profile parse error", e); }
   }
 
@@ -256,7 +188,6 @@ async function callClaude(userMessage) {
   return cleanText;
 }
 
-// ── FLASH ANIMATION ──
 function updateField(id, value) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -266,23 +197,19 @@ function updateField(id, value) {
   el.classList.add('highlight');
 }
 
-// ── UPDATE PROFILE SIDEBAR ──
 function updateProfile(data) {
   if (data.mood)       updateField('prof-mood', data.mood);
   if (data.goal)       updateField('prof-goal', data.goal);
   if (data.experience) updateField('prof-exp',  data.experience);
   if (data.risk)       updateField('prof-risk', data.risk);
-
   if (data.products && data.products.length > 0) {
     document.getElementById('products-container').innerHTML =
       data.products.map(p => `<div class="product-pill">${p}</div>`).join('');
   }
-
   if (data.interest && data.interest.toLowerCase().includes('stock')) showSectorRisk();
   if (data.phase !== undefined) { updatePathSteps(data.phase); updateScore(data.phase); }
 }
 
-// ── SECTOR RISK ──
 function showSectorRisk() {
   const sectors = [
     { name: "Large Cap", pct: 15, level: "low"  },
@@ -312,7 +239,6 @@ function showSectorRisk() {
   }, 100);
 }
 
-// ── RISK PROFILE ──
 function calculateRiskProfile() {
   const experience = document.getElementById('prof-exp').textContent;
   const risk = document.getElementById('prof-risk').textContent;
@@ -326,7 +252,6 @@ function calculateRiskProfile() {
   return           { label: 'Aggressive',          color: '#FF7A7A', advice: 'Can explore Mid & Small Caps' };
 }
 
-// ── PATH STEPS ──
 function updatePathSteps(phase) {
   for (let i = 0; i <= 4; i++) {
     const el = document.getElementById('step-' + i);
@@ -347,12 +272,10 @@ function updatePathSteps(phase) {
 
 function updateScore(phase) {
   if (phase < 4) {
-    document.getElementById('scoreNum').textContent =
-      'Profile: ' + Math.min(100, phase * 22) + '% complete';
+    document.getElementById('scoreNum').textContent = 'Profile: ' + Math.min(100, phase * 22) + '% complete';
   }
 }
 
-// ── ADD MESSAGE ──
 function addMessage(role, text) {
   const messages = document.getElementById('messages');
   const div = document.createElement('div');
@@ -362,7 +285,6 @@ function addMessage(role, text) {
   messages.scrollTop = messages.scrollHeight;
 }
 
-// ── QUICK REPLIES — shown once per phase only ──
 const phaseOptions = {
   0: ['😄 Excited to invest!', '🤔 Just curious', '😰 A bit nervous', '📰 Here for news'],
   1: ['💰 Grow my wealth', '📚 Learn investing', '📊 Track markets', '🏦 Plan finances'],
@@ -371,17 +293,16 @@ const phaseOptions = {
 };
 
 function setQuickReplies(phase) {
-  if (quickRepliesAnswered[phase]) return; // already answered, don't show again
+  if (quickRepliesAnswered[phase]) return;
   const options = phaseOptions[phase];
   if (!options) return;
-
   document.getElementById('quickReplies').innerHTML = options.map(opt =>
     `<button class="qr-btn" onclick="handleQuickReply('${opt}', ${phase})">${opt}</button>`
   ).join('');
 }
 
 function handleQuickReply(text, phase) {
-  quickRepliesAnswered[phase] = true;  // mark phase as done
+  quickRepliesAnswered[phase] = true;
   document.getElementById('quickReplies').innerHTML = '';
   sendMessage(text);
 }
@@ -390,17 +311,14 @@ function clearQuickReplies() {
   document.getElementById('quickReplies').innerHTML = '';
 }
 
-// ── SEND MESSAGE ──
 async function sendMessage(text) {
   const inputBox = document.getElementById('inputBox');
   const message = text || inputBox.value.trim();
   if (!message) return;
-
   inputBox.value = '';
   clearQuickReplies();
   addMessage('user', message);
   document.getElementById('sendBtn').disabled = true;
-
   const messages = document.getElementById('messages');
   const typing = document.createElement('div');
   typing.className = 'msg-agent';
@@ -408,38 +326,31 @@ async function sendMessage(text) {
   typing.textContent = '...';
   messages.appendChild(typing);
   messages.scrollTop = messages.scrollHeight;
-
   try {
     const reply = await callClaude(message);
     document.getElementById('typing').remove();
     addMessage('agent', reply);
-    setQuickReplies(currentPhase); // show options only if not already answered
+    setQuickReplies(currentPhase);
   } catch(e) {
     document.getElementById('typing')?.remove();
     addMessage('agent', 'Sorry, something went wrong. Please try again!');
     console.error(e);
   }
-
   document.getElementById('sendBtn').disabled = false;
 }
 
-// ── ENTER KEY ──
 document.getElementById('inputBox').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') sendMessage();
 });
 
-// ── INIT ──
 async function init() {
-  // Silently preload CSV in background
   try { await loadNiftyCSV(); } catch(e) { console.warn('CSV load failed:', e); }
-
   const messages = document.getElementById('messages');
   const typing = document.createElement('div');
   typing.className = 'msg-agent';
   typing.id = 'typing';
   typing.textContent = '...';
   messages.appendChild(typing);
-
   try {
     const greeting = await callClaude('Hello, I just arrived at The Economic Times website.');
     document.getElementById('typing').remove();
