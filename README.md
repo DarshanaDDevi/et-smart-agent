@@ -1,4 +1,4 @@
-# 🤖 ET Smart Agent — AI Onboarding Advisor
+# ET Smart Agent — AI Onboarding Advisor
 > Personalised AI-powered onboarding agent for The Economic Times
 
 ![ET Smart Agent](https://img.shields.io/badge/ET-Smart%20Agent-red)
@@ -7,26 +7,26 @@
 
 ---
 
-## 📌 What is this?
+##  What is this?
 
 ET Smart Agent is an AI-powered chat advisor called **Artha** that:
 
-- 👋 Greets every user with a personalised 3-minute profiling conversation
-- 🎯 Detects mood, goals, experience level and risk appetite
-- 📊 Maps users to the right Economic Times products
-- 📈 Shows real NSE sector risk data for beginner investors
-- 📉 Displays real NIFTY 50 price chart (1 year data from NSE India)
-- 🗺 Creates a personalised onboarding path for each user
+-  Greets every user with a personalised 3-minute profiling conversation
+-  Detects mood, goals, experience level and risk appetite
+-  Maps users to the right Economic Times products
+-  Shows real NSE sector risk data for beginner investors
+-  Displays real NIFTY 50 price chart (1 year data from NSE India)
+-  Creates a personalised onboarding path for each user
 
 ---
 
-## 🚀 Live Demo
+##  Live Demo
 
 Open `index.html` in your browser after following setup instructions below.
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Technology | Purpose |
 |---|---|
@@ -39,7 +39,7 @@ Open `index.html` in your browser after following setup instructions below.
 
 ---
 
-## ✨ Features
+##  Features
 
 ### 1. 5-Phase Smart Profiling
 ```
@@ -71,7 +71,7 @@ Phase 4 → Personalised ET product plan
 
 ---
 
-## ⚙️ Setup Instructions
+##  Setup Instructions
 
 ### Step 1 — Clone the repo
 ```bash
@@ -104,7 +104,7 @@ http://127.0.0.1:8080
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 ```
 et-smart-agent/
 │
@@ -120,7 +120,7 @@ et-smart-agent/
 
 ---
 
-## 📊 NSE Sector Risk Data
+##  NSE Sector Risk Data
 
 | Sector | Index | Risk % | Level |
 |---|---|---|---|
@@ -135,7 +135,7 @@ et-smart-agent/
 
 ---
 
-## 🔒 Security
+##  Security
 
 - API key is stored in `config.js` which is listed in `.gitignore`
 - `config.js` is never pushed to GitHub
@@ -143,14 +143,14 @@ et-smart-agent/
 
 ---
 
-## 👩‍💻 Built By
+##  Built By
 
 **Darshana D Devi, B Gowrinanda, Ankitha Elsa Jacob**
 Built step by step as a learning project.
 
 ---
 
-## 📜 Commit History
+##  Commit History
 
 This project was built incrementally with clear commits:
 ```
